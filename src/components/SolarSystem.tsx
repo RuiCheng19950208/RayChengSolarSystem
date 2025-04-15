@@ -147,8 +147,8 @@ class SolarSystem {
         ]);
 
         // Setup lights
-        // const ambientLight = new THREE.AmbientLight(0x333333);
-        // this.scene.add(ambientLight);
+        const ambientLight = new THREE.AmbientLight(0x333333);
+        this.scene.add(ambientLight);
 
         // const pointLight = new THREE.PointLight(0xFFFFFF, 2, 300);
         // this.scene.add(pointLight);
@@ -256,10 +256,14 @@ class SolarSystem {
         if (ring) {
             // Increase ring segments from 32 to 64 for higher detail
             const ringGeometry = new THREE.RingGeometry(ring.innerRadius, ring.outerRadius, 512);
-            const ringMaterial = new THREE.MeshBasicMaterial({
+            
+            // Change from MeshBasicMaterial to MeshPhongMaterial to make rings responsive to lighting
+            const ringMaterial = new THREE.MeshPhongMaterial({
                 map: typeof ring.texture === 'string' ? textureLoader(ring.texture) : ring.texture,
                 side: THREE.DoubleSide,
-                transparent: true
+                transparent: true,
+                shininess: 30,
+                specular: 0x333333
             });
             
             // Set texture properties if available
@@ -272,6 +276,8 @@ class SolarSystem {
             
             const ringMesh = new THREE.Mesh(ringGeometry, ringMaterial);
             ringMesh.rotation.x = Math.PI / 2;  // Rotate to be horizontal
+            ringMesh.castShadow = true;
+            ringMesh.receiveShadow = true;
             planet.add(ringMesh);
         }
 
