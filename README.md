@@ -10,3 +10,4 @@ https://www.youtube.com/watch?v=XXzqSAt3UIw&list=PLjcjAqAnHd1EIxV4FSZIiJZvsdrBc1
 Model file:
 https://poly.pizza/m/u105mYHLHU
 ![Image_20250414143139](https://github.com/user-attachments/assets/5c18a4ac-feca-4931-b462-c086049f910e)
+![Image_20250414030104](https://github.com/user-attachments/assets/30bb015c-2d77-44f1-8412-54ce0ea68a36)
