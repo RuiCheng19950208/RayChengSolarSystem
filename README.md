@@ -5,7 +5,7 @@ My simulator uses real-world proportions for planet sizes and orbital distances.
 In the real world, the ratio between Earth's orbital radius and Earth's diameter is about 11,740. In this project, the ratio is set to 390.
 
 Use W, A, S, D, Q, and E to move.
-Use SPACE to toggle UI
+Use SPACE to toggle UI.
 Use ESC to exit the application.
 Control the camera's direction and zoom with your mouse.
 
