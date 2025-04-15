@@ -14,6 +14,7 @@ const Renderer: React.FC = () => {
   const [selectedPlanet, setSelectedPlanet] = useState("Earth");
   const [uiVisible, setUiVisible] = useState(true); // State for UI visibility
   const [airplaneSpeed, setAirplaneSpeed] = useState(0); // State to store airplane speed
+  const [activeDistanceSetting, setActiveDistanceSetting] = useState("compact"); // "compact" or "realistic"
   
   // Get planet colors from the solarSystem
   const planetColors = solarSystem.getColorList();
@@ -42,13 +43,17 @@ const Renderer: React.FC = () => {
         // Get the airplane velocity magnitude
         const velocity = cameraController.getAirplane().getVelocity().length();
         
-        // Get Earth's diameter in the same units
-        const earthDiameter = solarSystem.getObjectBaseSize("Earth") * 2 * solarSystem.getSizeRatio();
+        // Define the speed of light in our simulation units
+        // In reality, light travels at 299,792,458 m/s
+        // Earth diameter is 100 units in our base sizes
+        // Light travels ~23,528 Earth diameters per second
+        const earthDiameter = 100 * solarSystem.getSizeRatio(); // Earth diameter from baseSizes[3]
+        const lightSpeedInSimUnits = 23.528 * earthDiameter; 
         
-        // Calculate speed in Earth diameters per second
-        const speedInEarthDiameters = velocity / earthDiameter;
+        // Calculate speed as percentage of light speed
+        const percentOfLightSpeed = (velocity / lightSpeedInSimUnits) * 100;
         
-        setAirplaneSpeed(speedInEarthDiameters);
+        setAirplaneSpeed(percentOfLightSpeed);
       }
       
       // Request next frame
@@ -194,6 +199,7 @@ const Renderer: React.FC = () => {
     solarSystem.togglePlanetIndicators();
     setPlanetLabelsOn(!planetLabelsOn);
   };
+
 
   // Handle rotation speed change
   const handleRotationSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -437,7 +443,70 @@ const Renderer: React.FC = () => {
               borderRadius: '4px',
               border: '1px solid rgba(255,255,255,0.3)',
             }}>
-              SPEED: {airplaneSpeed.toFixed(3)} Earth diameters/sec
+              SPEED: {airplaneSpeed.toFixed(2)}% light speed
+            </div>
+            
+            {/* Distance ratio buttons */}
+            <div style={{ 
+              marginTop: '10px',
+              display: 'flex',
+              gap: '8px',
+              justifyContent: 'center'
+            }}>
+              <button 
+                onClick={() => {
+                  // First turn off planet labels if they're on
+                  if (planetLabelsOn) {
+                    solarSystem.togglePlanetIndicators();
+                    setPlanetLabelsOn(false);
+                  }
+                  // Then change the distance setting
+                  solarSystem.setDistanceRatio(1/30);
+                  solarSystem.resetPlanets();
+                  setActiveDistanceSetting("compact");
+                }}
+                style={{
+                  flex: 1,
+                  padding: '8px 10px',
+                  background: activeDistanceSetting === "compact" ? '#6cff6c' : '#444',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  fontSize: '12px',
+                  transition: 'background-color 0.3s'
+                }}
+              >
+                1/30 Distance
+              </button>
+              <button 
+                onClick={() => {
+                  // First turn off planet labels if they're on
+                  if (planetLabelsOn) {
+                    solarSystem.togglePlanetIndicators();
+                    setPlanetLabelsOn(false);
+                  }
+                  // Then change the distance setting
+                  solarSystem.setDistanceRatio(1.0);
+                  solarSystem.resetPlanets();
+                  setActiveDistanceSetting("realistic");
+                }}
+                style={{
+                  flex: 1,
+                  padding: '8px 10px',
+                  background: activeDistanceSetting === "realistic" ? '#6cff6c' : '#444',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  fontSize: '12px',
+                  transition: 'background-color 0.3s'
+                }}
+              >
+                Realistic Distance
+              </button>
             </div>
           </div>
         </>

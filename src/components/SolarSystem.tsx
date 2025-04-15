@@ -48,7 +48,7 @@ class SolarSystem {
         this.selfRotationSpeed = 0.02;
         this.orbitSpeed = 0.002;
         this.sizeRatio = 1.0;
-        this.distanceRatio = 1.0;
+        this.distanceRatio = 1/30;
         this.baseSelfRotationSpeeds = [0.004, 0.002, 0.02, 0.018, 0.04, 0.038, 0.03, 0.032, 0.008];
         this.baseOrbitSpeeds = [
             0.041667, // Mercury: 0.01/0.24 (88 days)
@@ -102,15 +102,15 @@ class SolarSystem {
         
         // Scale distances with Mercury at 1500 units
         this.baseDistances = [
-            15000,      // Mercury (0.387 AU) - index 0
-            28020,      // Venus (0.723 AU) - index 1
-            38760,      // Earth (1 AU) - index 2
-            59070,      // Mars (1.524 AU) - index 3
-            201630,     // Jupiter (5.203 AU) - index 4
-            371390,     // Saturn (9.582 AU) - index 5
-            744190,     // Uranus (19.201 AU) - index 6
-            1164570,    // Neptune (30.047 AU) - index 7
-            1530080     // Pluto (39.482 AU) - index 8
+            454350,      // Mercury (0.387 AU) - index 0
+            848726,      // Venus (0.723 AU) - index 1
+            1174000,     // Earth (1 AU) - index 2
+            1789229,     // Mars (1.524 AU) - index 3
+            6107373,     // Jupiter (5.203 AU) - index 4
+            11249402,    // Saturn (9.582 AU) - index 5
+            22541518,    // Uranus (19.201 AU) - index 6
+            35274828,    // Neptune (30.047 AU) - index 7
+            46346123     // Pluto (39.482 AU) - index 8
         ];
         
         // Scene will be injected later via setScene()
@@ -495,6 +495,11 @@ class SolarSystem {
         this.distanceRatio = ratio;
     }
 
+    // Public method to reset planets after changing settings
+    public resetPlanets(): void {
+        this.createPlanets();
+    }
+
     // Get the world position of a planet or the sun based on its name
     public getObjectPosition(objectName: string): THREE.Vector3 | null {
         // Check if looking for the sun
@@ -589,7 +594,7 @@ class SolarSystem {
             planetMesh.getWorldPosition(worldPosition);
             
             // Create a line pointing upward
-            const lineHeight = 50000;
+            const lineHeight = 200000;
             const lineMaterial = new THREE.LineBasicMaterial({ color: planetColor });
             const lineGeometry = new THREE.BufferGeometry().setFromPoints([
                 new THREE.Vector3(0, 0, 0),
