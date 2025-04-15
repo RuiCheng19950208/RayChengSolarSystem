@@ -175,6 +175,11 @@ export class CameraController {
         return this.airplane.getPosition();
     }
 
+    // Get the airplane object
+    public getAirplane(): Airplane {
+        return this.airplane;
+    }
+
     public dispose(): void {
         this.controller.dispose();
         this.airplane.dispose();

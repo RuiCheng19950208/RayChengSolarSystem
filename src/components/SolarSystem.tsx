@@ -263,7 +263,14 @@ class SolarSystem {
                 side: THREE.DoubleSide,
                 transparent: true,
                 shininess: 30,
-                specular: 0x333333
+                specular: 0x333333,
+                emissive: 0x222222,          // Add slight emissive for visibility from back
+                emissiveIntensity: 0.2,       // Low intensity so it doesn't overpower lighting
+                depthWrite: false,            // Prevents sorting issues with transparency
+                blending: THREE.CustomBlending, // Use custom blending for better transparency
+                blendSrc: THREE.SrcAlphaFactor,
+                blendDst: THREE.OneMinusSrcAlphaFactor,
+                blendEquation: THREE.AddEquation
             });
             
             // Set texture properties if available

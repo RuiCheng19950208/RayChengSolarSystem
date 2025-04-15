@@ -7,7 +7,7 @@ export class Airplane {
     private mesh: THREE.Group;
     private velocity: THREE.Vector3;
     private thrust: THREE.Vector3;
-    private maxThrust: number = 5000;
+    private maxThrust: number = 500;
     private mass: number = 1;
     private rotationSpeed: number = 3;
     private friction: number = 0.5;
@@ -207,6 +207,10 @@ export class Airplane {
         return this.mesh.position.clone();
     }
 
+    public getVelocity(): THREE.Vector3 {
+        return this.velocity.clone();
+    }
+
     public teleportTo(position: THREE.Vector3, direction?: THREE.Vector3): void {
         // Reset velocity when teleporting to prevent unexpected movements
         this.velocity.set(0, 0, 0);
@@ -242,6 +246,10 @@ export class Airplane {
 
     public getThrust(): THREE.Vector3 {
         return this.thrust.clone();
+    }
+
+    public setMaxThrust(value: number): void {
+        this.maxThrust = value;
     }
 
     public dispose(): void {

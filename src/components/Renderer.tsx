@@ -10,8 +10,10 @@ const Renderer: React.FC = () => {
   const [planetLabelsOn, setPlanetLabelsOn] = useState(false);
   const [rotationSpeed, setRotationSpeed] = useState(3); // 0-8 scale (2^0 to 2^8)
   const [orbitSpeed, setOrbitSpeed] = useState(3); // 0-8 scale (2^0 to 2^8)
+  const [thrustPower, setThrustPower] = useState(500); // Default 500, range 100-2000
   const [selectedPlanet, setSelectedPlanet] = useState("Earth");
   const [uiVisible, setUiVisible] = useState(true); // State for UI visibility
+  const [airplaneSpeed, setAirplaneSpeed] = useState(0); // State to store airplane speed
   
   // Get planet colors from the solarSystem
   const planetColors = solarSystem.getColorList();
@@ -31,6 +33,34 @@ const Renderer: React.FC = () => {
     { name: "Sun", color: "#FFFF00" }, // Keep Sun's color custom
     
   ];
+
+  // Effect to update airplane speed
+  useEffect(() => {
+    const updateSpeed = () => {
+      const cameraController = getCameraController();
+      if (cameraController && cameraController.getAirplane()) {
+        // Get the airplane velocity magnitude
+        const velocity = cameraController.getAirplane().getVelocity().length();
+        
+        // Get Earth's diameter in the same units
+        const earthDiameter = solarSystem.getObjectBaseSize("Earth") * 2 * solarSystem.getSizeRatio();
+        
+        // Calculate speed in Earth diameters per second
+        const speedInEarthDiameters = velocity / earthDiameter;
+        
+        setAirplaneSpeed(speedInEarthDiameters);
+      }
+      
+      // Request next frame
+      requestAnimationFrame(updateSpeed);
+    };
+    
+    // Start the update loop
+    const animationId = requestAnimationFrame(updateSpeed);
+    
+    // Cleanup
+    return () => cancelAnimationFrame(animationId);
+  }, []);
 
   const handleTeleport = () => {
     // Get planet or sun position
@@ -195,6 +225,18 @@ const Renderer: React.FC = () => {
     }
   };
 
+  // Handle thrust power change
+  const handleThrustPowerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    setThrustPower(value);
+    
+    // Update the airplane's max thrust
+    const cameraController = getCameraController();
+    if (cameraController && cameraController.getAirplane()) {
+      cameraController.getAirplane().setMaxThrust(value);
+    }
+  };
+
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <div ref={mountRef} style={{ width: '100%', height: '100%', overflow: 'hidden' }} />
@@ -295,6 +337,29 @@ const Renderer: React.FC = () => {
               />
             </div>
             
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px' }}>
+                Thrust Power: {thrustPower}
+              </label>
+              <input 
+                type="range" 
+                min="100" 
+                max="5000" 
+                step="100"
+                value={thrustPower}
+                onChange={handleThrustPowerChange}
+                style={{
+                  width: '100%',
+                  height: '15px',
+                  borderRadius: '5px',
+                  background: '#444',
+                  outline: 'none',
+                  opacity: '0.7',
+                  transition: 'opacity .2s'
+                }}
+              />
+            </div>
+            
             {/* Teleport control */}
             <div style={{ marginTop: '10px' }}>
               <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px' }}>
@@ -359,6 +424,20 @@ const Renderer: React.FC = () => {
               >
                 {planetLabelsOn ? 'Hide Planet Labels' : 'Show Planet Labels'}
               </button>
+            </div>
+            
+            {/* Speed display */}
+            <div style={{ 
+              marginTop: '10px',
+              padding: '8px 10px',
+              background: 'rgba(0,0,0,0.3)',
+              color: 'white',
+              fontFamily: 'monospace',
+              textAlign: 'center',
+              borderRadius: '4px',
+              border: '1px solid rgba(255,255,255,0.3)',
+            }}>
+              SPEED: {airplaneSpeed.toFixed(3)} Earth diameters/sec
             </div>
           </div>
         </>
