@@ -147,11 +147,11 @@ class SolarSystem {
         ]);
 
         // Setup lights
-        const ambientLight = new THREE.AmbientLight(0x333333);
-        this.scene.add(ambientLight);
+        // const ambientLight = new THREE.AmbientLight(0x333333);
+        // this.scene.add(ambientLight);
 
-        const pointLight = new THREE.PointLight(0xFFFFFF, 2, 300);
-        this.scene.add(pointLight);
+        // const pointLight = new THREE.PointLight(0xFFFFFF, 2, 300);
+        // this.scene.add(pointLight);
 
         // Create sun and planets
         this.createSun();
@@ -161,19 +161,29 @@ class SolarSystem {
     private createSun(): void {
         // Increase sun geometry resolution from 128,128 to 256,256
         const sunGeo = new THREE.SphereGeometry(this.baseSizes[0]*this.sizeRatio, 512, 512);
-        const sunMat = new THREE.MeshStandardMaterial({
-            map: textureLoader(sunTexture),
-            color: 0xffff00,
-            emissive: 0xffff00,
-            emissiveIntensity: 0.8
+        
+        // Debug texture loading
+        console.log("Attempting to load sun texture:", sunTexture);
+        const texture = textureLoader(sunTexture);
+        console.log("Texture loaded object:", texture);
+        
+        // Create a material that doesn't require lighting to be visible
+        const sunMat = new THREE.MeshBasicMaterial({
+            map: texture,
+            // color: 0xff8800 // Orange fallback color that will be visible even if texture fails
         });
         
-        // Set texture properties if available
+        // Log texture properties
         if (sunMat.map) {
+            console.log("Sun texture dimensions:", sunMat.map.image?.width, "x", sunMat.map.image?.height);
+            
+            // Set high-quality texture rendering
             sunMat.map.minFilter = THREE.LinearFilter;
             sunMat.map.magFilter = THREE.LinearFilter;
-            // Set maximum anisotropy for the texture
             sunMat.map.anisotropy = 16;
+            sunMat.needsUpdate = true;
+        } else {
+            console.warn("Sun texture map not available - will show as solid orange");
         }
         
         this.sun = new THREE.Mesh(sunGeo, sunMat);
