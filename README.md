@@ -16,3 +16,5 @@ Model file:
 https://poly.pizza/m/u105mYHLHU
 ![Image_20250414143139](https://github.com/user-attachments/assets/5c18a4ac-feca-4931-b462-c086049f910e)
 ![Image_20250414030104](https://github.com/user-attachments/assets/30bb015c-2d77-44f1-8412-54ce0ea68a36)
+![Image_20250415174751](https://github.com/user-attachments/assets/69036328-47c2-4cc2-a46b-e26b730e85f2)
+![Image_20250415174759](https://github.com/user-attachments/assets/c303dada-ef4d-4e61-bba5-2430119c0421)
